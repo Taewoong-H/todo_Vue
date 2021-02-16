@@ -1,15 +1,34 @@
 <template>
     <ul class="list">
-        <li class="list_item">
-            <input type="checkbox" id="list-item-1" />
-            <label for="list-item-1">
-                <p class="list_text">Smile! :)</p>
+        <li class="list_item" v-for="(toDoItem, index) in this.props" v-bind:key="index">
+            <input type="checkbox" v-bind:id="toDoItem.item" v-bind:checked="toDoItem.completed === true" v-on:change="toggleComplete(toDoItem)" />
+            <label v-bind:for="toDoItem.item" class="list_label">
+                <p class="list_text">{{ toDoItem.item }}</p>
             </label>
-            <p class="list_data">5/26</p>
-            <button class="list_delete">Delete</button>
+            <p class="list_data">{{toDoItem.date}}</p>
+            <button class="list_delete" v-on:click="removeToDo(toDoItem, index)">Delete</button>
         </li>
     </ul>
 </template>
+
+<script>
+export default {
+    props: ["props"],
+
+    methods: {
+        toggleComplete(toDoItem) {
+            toDoItem.completed = !toDoItem.completed;
+            localStorage.setItem(toDoItem.item, JSON.stringify(toDoItem));
+        },
+
+        removeToDo(toDoItem, index) {
+            localStorage.removeItem(toDoItem.item);
+            this.toDoItems.splice(index, 1);
+        }
+    }
+
+}
+</script>
 
 <style>
     .list_item {

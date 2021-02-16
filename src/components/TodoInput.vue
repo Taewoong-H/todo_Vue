@@ -16,13 +16,7 @@ export default {
     methods: {
         addToDoItem() {
             if (this.newToDoItem) {
-                const toDoData = {
-                    item: this.newToDoItem,
-                    data: `${new Date().getMonth() + 1}/${new Date().getDate()}`,
-                    completed: false
-                };
-
-                localStorage.setItem(this.newToDoItem, JSON.stringify(toDoData));
+                this.$emit("addItem", this.newToDoItem);
                 this.clearInput();
             }
         },

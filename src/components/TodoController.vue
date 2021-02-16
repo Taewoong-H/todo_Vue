@@ -9,9 +9,19 @@
             <option value="name-desc">Name Descending</option>
         </select>
         </div>
-        <button class="clear">Clear All</button>
+        <button class="clear" v-on:click="clearToDo">Clear All</button>
     </div>
 </template>
+
+<script>
+export default {
+    methods: {
+        clearToDo() {
+            localStorage.clear();
+        }
+    }
+}
+</script>
 
 <style>
 .controller {
