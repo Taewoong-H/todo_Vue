@@ -17,13 +17,11 @@ export default {
 
     methods: {
         toggleComplete(toDoItem) {
-            toDoItem.completed = !toDoItem.completed;
-            localStorage.setItem(toDoItem.item, JSON.stringify(toDoItem));
+            this.$emit("toggleItem", toDoItem);
         },
 
         removeToDo(toDoItem, index) {
-            localStorage.removeItem(toDoItem.item);
-            this.toDoItems.splice(index, 1);
+            this.$emit("removeItem", toDoItem, index);
         }
     }
 
@@ -36,6 +34,7 @@ export default {
     }
 
     .list_item input {
+        margin-top: 1.5rem;
         flex: 0.1;
     }
 

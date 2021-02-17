@@ -1,10 +1,10 @@
 <template>
   <div>
     <TodoHeader />
-    <TodoTitle />
+    <TodoTitle v-bind:props="checkCount" />
     <TodoInput v-on:addItem="addOneItem" />
-    <TodoController />
-    <TodoList v-bind:props="toDoItems" />
+    <TodoController v-on:sortItem="sortAllItem" v-on:clearAll="clearAllItem"/>
+    <TodoList v-bind:props="toDoItems" v-on:removeItem="removeOneItem" v-on:toggleItem="toggleOneItem" />
     <TodoFooter />
   </div>
 </template>
@@ -21,6 +21,15 @@ import getDate from './utils/getDate.js';
 
 export default {
   name: 'App',
+  components: {
+    TodoHeader,
+    TodoTitle,
+    TodoInput,
+    TodoController,
+    TodoList,
+    TodoFooter
+  },
+
   data() {
     return {
       toDoItems: []
@@ -31,13 +40,69 @@ export default {
     addOneItem(toDoItem){
       const toDoData = {
         item: toDoItem,
-        data: `${getDate().date}/${getDate().week}`,
+        date: `${getDate().date}/${getDate().week}`,
         time: getDate().time,
         completed: false
       };
 
       localStorage.setItem(toDoItem, JSON.stringify(toDoData));
       this.toDoItems.push(toDoData);
+    },
+
+    removeOneItem(toDoItem, index) {
+      localStorage.removeItem(toDoItem.item);
+      this.toDoItems.splice(index, 1);
+    },
+
+    toggleOneItem(toDoItem) {
+      toDoItem.completed = !toDoItem.completed;
+      localStorage.setItem(toDoItem.item, JSON.stringify(toDoItem));
+    },
+
+    clearAllItem() {
+      this.toDoItems = [];
+      localStorage.clear();
+    },
+
+    sortTodoLatest() {
+      this.toDoItems.sort((a, b) => {
+        return b.time - a.time;
+      })
+    },
+
+    sortTodoOldest() {
+      this.toDoItems.sort((a, b) => {
+        return a.time - b.time
+      })
+    },
+
+    sortAllItem(selectedSort) {
+      if (selectedSort.value === "date-desc") {
+        this.sortTodoLatest();
+      } else if (selectedSort.value === "date-asc") {
+        this.sortTodoOldest();
+      }
+    }
+  },
+
+  computed: {
+    checkCount() {
+      const checkLeftItems = () => {
+        let leftCount = 0;
+        this.toDoItems.forEach((item) => {
+          if (item.completed === false) {
+            leftCount++;
+          }
+        })
+        return leftCount;
+      };
+
+      const count = {
+        total: this.toDoItems.length,
+        left: checkLeftItems()
+      };
+      
+      return count
     }
   },
 
@@ -49,15 +114,6 @@ export default {
         }
       }
     }
-  },
-
-  components: {
-    TodoHeader,
-    TodoTitle,
-    TodoInput,
-    TodoController,
-    TodoList,
-    TodoFooter
   }
 }
 </script>

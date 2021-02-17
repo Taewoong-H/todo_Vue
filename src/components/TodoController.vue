@@ -2,11 +2,9 @@
     <div class="controller">
         <div class="select">
         <label for="order">Order</label>
-        <select name="order" id="order" class="selectbox">
-            <option value="date-asc">Date Ascending</option>
-            <option value="date-desc">Date Descending</option>
-            <option value="name-asc">Name Ascending</option>
-            <option value="name-desc">Name Descending</option>
+        <select name="order" id="order" class="selectbox" v-model="selected" v-on:change="sortTodo">
+            <option value="date-asc">Oldest</option>
+            <option value="date-desc">Latest</option>
         </select>
         </div>
         <button class="clear" v-on:click="clearToDo">Clear All</button>
@@ -15,9 +13,19 @@
 
 <script>
 export default {
+    data() {
+        return {
+            selected: "data-asc"
+        }
+    },
+
     methods: {
+        sortTodo() {
+            this.$emit("sortItem", { value: this.selected });
+        },
+
         clearToDo() {
-            localStorage.clear();
+            this.$emit("clearAll");
         }
     }
 }

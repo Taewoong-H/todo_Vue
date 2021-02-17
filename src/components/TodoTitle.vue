@@ -2,13 +2,15 @@
     <div class="title">
         <p class="title_message">{{message}}</p>
         <p class="title_task">
-            You've got <span class="title_task_total">{{taskTotal}}</span> tasks today.
+            You've got <span class="title_task_total">{{props.left}}/{{props.total}}</span> tasks today.
         </p>
     </div>
 </template>
 
 <script>
 export default {
+    props: ["props"],
+
     data() {
         return {
             message: "Hello",
